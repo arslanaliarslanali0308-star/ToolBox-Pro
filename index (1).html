@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="google-site-verification" content="nMbs4qWkKg3AdEtEC8qwXWZ6nsAuhD2JkY7LYImBZxA" />
+<title>ToolBox Pro - Free Online Tools</title>
+<meta name="description" content="14 free online tools: PDF merge, image compress, QR code, text to speech and more. No signup, files stay on your device.">
+<style>
+:root{--bg:#0a0f1f;--card:#131a33;--line:#252f57;--ac:#6f8fff;--ac2:#a56fff;--tx:#e9edff;--mu:#8f9ac4}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,Segoe UI,sans-serif;background:radial-gradient(900px 500px at 15% -5%,#1c2658,transparent),var(--bg);color:var(--tx);min-height:100vh}
+header{text-align:center;padding:42px 16px 8px}
+h1{margin:0;font-size:2.3rem;letter-spacing:-.5px;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{color:var(--mu);margin:6px 0 0}
+main{max-width:1000px;margin:auto;padding:20px 16px 40px}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left;color:var(--tx);cursor:pointer;font:inherit;transition:border-color .15s,transform .15s}
+.card:hover,.card:focus-visible{border-color:var(--ac);transform:translateY(-2px);outline:none}
+.card span{font-size:1.7rem;display:block}.card b{display:block;margin-top:6px}.card small{color:var(--mu)}
+#panel{margin-top:24px;background:var(--card);border:1px solid var(--ac);border-radius:16px;padding:20px}
+#panel[hidden]{display:none}
+#panel h2{margin:0 0 12px;display:flex;justify-content:space-between;align-items:center;font-size:1.2rem}
+input,select,textarea,button{font:inherit;color:var(--tx);background:#0d1330;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:4px 6px 4px 0;max-width:100%}
+textarea{width:100%;min-height:120px}
+input[type=file]{width:100%}
+button.go,#go,#dd,#st{background:linear-gradient(90deg,var(--ac),var(--ac2));border:0;font-weight:600;cursor:pointer}
+#x{background:none;border:0;cursor:pointer;font-size:1.3rem;margin:0;padding:0 6px}
+#msg{color:#9be7b5;margin:10px 0 0;min-height:1.4em}
+#q{margin:10px 0}
+footer{max-width:1000px;margin:auto;padding:0 16px 30px;color:var(--mu);font-size:.85rem}
+footer h3{color:var(--tx);font-size:1rem}
+.sp{display:inline-block;margin-top:12px;padding:8px 16px;border:1px dashed var(--ac);border-radius:999px;color:var(--ac);text-decoration:none;font-size:.9rem}
+.sp:hover{background:#131a33}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+<h1>ToolBox Pro</h1>
+<p>14 free tools. No signup. Your files never leave your device.</p>
+<a class="sp" href="https://araplhn.org/4/a761632e21ce0a3983a168a2b689de5e" target="_blank" rel="noopener sponsored">Support us - Sponsored link</a>
+</header>
+<main>
+<div id="grid"></div>
+<section id="panel" hidden>
+<h2><span id="pt"></span><button id="x" aria-label="Close">&times;</button></h2>
+<div id="pb"></div>
+</section>
+</main>
+<footer>
+<h3>Privacy Policy</h3>
+<p>ToolBox Pro processes your files inside your browser. We do not upload, store or see your files. This site shows ads from third-party networks, which may use cookies to show relevant ads. By using this site you accept this. Downloader tools are for content you own or have permission to save.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),
+dl=(b,n)=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click()},
+img=f=>new Promise(r=>{const i=new Image;i.onload=()=>r(i);i.src=URL.createObjectURL(f)}),
+cv=(i,w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(i,0,0,w,h);return c},
+blob=(c,t,q)=>new Promise(r=>c.toBlob(r,t,q)),
+buf=f=>f.arrayBuffer(),
+kb=b=>(b.size/1024).toFixed(0)+' KB',
+say=t=>$('#msg').textContent=t,
+run=fn=>$('#go').onclick=async()=>{try{say('Working...');await fn();}catch(e){say('Error: '+e.message)}},
+IMG='<input id=f type=file accept="image/*">',
+GO='<button id=go>Create</button>';
+
+function wav(b){const n=b.length,c=b.numberOfChannels,v=new DataView(new ArrayBuffer(44+n*c*2)),w=(o,s)=>[...s].forEach((x,i)=>v.setUint8(o+i,x.charCodeAt(0)));
+w(0,'RIFF');v.setUint32(4,36+n*c*2,1);w(8,'WAVEfmt ');v.setUint32(16,16,1);v.setUint16(20,1,1);v.setUint16(22,c,1);v.setUint32(24,b.sampleRate,1);v.setUint32(28,b.sampleRate*c*2,1);v.setUint16(32,c*2,1);v.setUint16(34,16,1);w(36,'data');v.setUint32(40,n*c*2,1);
+let o=44;for(let i=0;i<n;i++)for(let k=0;k<c;k++){v.setInt16(o,Math.max(-1,Math.min(1,b.getChannelData(k)[i]))*32767,1);o+=2}
+return new Blob([v],{type:'audio/wav'})}
+
+const grab=name=>run(async()=>{const u=$('#u').value.trim();if(!u)return say('Paste a link first');
+try{const r=await fetch(u);dl(await r.blob(),name);say('Done')}
+catch(e){window.open(u,'_blank');say('This site blocks direct download. Opened in a new tab: right-click or long-press to save.')}});
+
+const T=[
+['🖼️','Image Downloader','Save an image from its link','<input id=u placeholder="Image link https://..." style="width:100%"><button id=go>Download</button>',()=>grab('image.jpg')],
+['🌄','Wallpaper Maker','Crop a photo to wallpaper size',IMG+'<select id=s><option>1920x1080<option>1080x1920<option>2560x1440<option>1080x1080</select>'+GO,
+()=>run(async()=>{const f=$('#f').files[0];if(!f)return say('Choose a photo first');const[w,h]=$('#s').value.split('x').map(Number),i=await img(f),k=Math.max(w/i.width,h/i.height),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(i,(w-i.width*k)/2,(h-i.height*k)/2,i.width*k,i.height*k);dl(await blob(c,'image/jpeg',.92),'wallpaper.jpg');say('Done')})],
+['🎞️','GIF Downloader','Save a GIF from its link','<input id=u placeholder="GIF link https://..." style="width:100%"><button id=go>Download</button>',()=>grab('animation.gif')],
+['📄','Text to PDF','Turn text into a PDF (English)','<textarea id=t placeholder="Type or paste your text"></textarea>'+GO,
+()=>run(async()=>{const t=$('#t').value;if(!t.trim())return say('Write some text first');const{PDFDocument:D,StandardFonts:S}=PDFLib,d=await D.create(),ft=await d.embedFont(S.Helvetica),L=t.split('\n').flatMap(l=>l.match(/.{1,90}/g)||['']);
+for(let i=0;i<L.length;i+=50){const p=d.addPage([595,842]);L.slice(i,i+50).forEach((l,j)=>p.drawText(l.replace(/[^\x20-\x7E]/g,'?'),{x:40,y:800-j*15,size:11,font:ft}))}
+dl(new Blob([await d.save()]),'text.pdf');say('Done')})],
+['📚','PDF Merger','Join PDFs into one','<input id=f type=file accept=".pdf" multiple><p>Pick 2 or more PDFs.</p>'+GO,
+()=>run(async()=>{const F=$('#f').files;if(F.length<2)return say('Select at least 2 PDFs');const D=PDFLib.PDFDocument,m=await D.create();
+for(const f of F){const s=await D.load(await buf(f));(await m.copyPages(s,s.getPageIndices())).forEach(p=>m.addPage(p))}
+dl(new Blob([await m.save()]),'merged.pdf');say('Done')})],
+['🗜️','PDF Compressor','Make a PDF a little smaller','<input id=f type=file accept=".pdf"><p>Light compression. Scanned PDFs may not shrink much.</p>'+GO,
+()=>run(async()=>{const f=$('#f').files[0];if(!f)return say('Choose a PDF first');const d=await PDFLib.PDFDocument.load(await buf(f)),b=new Blob([await d.save({useObjectStreams:true})]);dl(b,'compressed.pdf');say(kb(f)+' to '+kb(b))})],
+['📉','Image Compressor','Shrink photo file size',IMG+'<label>Quality <input id=q type=range min=10 max=95 value=70></label>'+GO,
+()=>run(async()=>{const f=$('#f').files[0];if(!f)return say('Choose a photo first');const i=await img(f),b=await blob(cv(i,i.width,i.height),'image/jpeg',$('#q').value/100);dl(b,'compressed.jpg');say(kb(f)+' to '+kb(b))})],
+['🧾','Image to PDF','Photos into one PDF','<input id=f type=file accept="image/*" multiple>'+GO,
+()=>run(async()=>{const F=$('#f').files;if(!F.length)return say('Choose photos first');const d=await PDFLib.PDFDocument.create();
+for(const f of F){const i=await img(f),j=await d.embedJpg(await buf(await blob(cv(i,i.width,i.height),'image/jpeg',.92)));d.addPage([i.width,i.height]).drawImage(j,{x:0,y:0,width:i.width,height:i.height})}
+dl(new Blob([await d.save()]),'images.pdf');say('Done')})],
+['📐','Photo Resizer','Set exact width and height',IMG+'<input id=w type=number placeholder="Width px"><input id=h type=number placeholder="Height px">'+GO,
+()=>run(async()=>{const f=$('#f').files[0],w=+$('#w').value,h=+$('#h').value;if(!f||!w||!h)return say('Choose a photo and enter width and height');dl(await blob(cv(await img(f),w,h),'image/png'),'resized.png');say('Done')})],
+['🎧','Video to Audio','Extract sound as WAV','<input id=f type=file accept="video/*"><p>Best for short videos (under 10 minutes).</p>'+GO,
+()=>run(async()=>{const f=$('#f').files[0];if(!f)return say('Choose a video first');dl(wav(await new AudioContext().decodeAudioData(await buf(f))),'audio.wav');say('Done')})],
+['💬','Subtitle Maker','Text lines to an SRT file','<textarea id=t placeholder="One subtitle per line"></textarea><label>Seconds per line <input id=n type=number value=3 min=1 style="width:80px"></label>'+GO,
+()=>run(async()=>{const L=$('#t').value.split('\n').filter(x=>x.trim()),s=+$('#n').value||3;if(!L.length)return say('Add some lines first');
+const t=x=>{const q=x%60;return[Math.floor(x/3600),Math.floor(x%3600/60)].map(a=>String(a).padStart(2,0)).join(':')+':'+q.toFixed(3).padStart(6,0).replace('.',',')};
+dl(new Blob([L.map((l,i)=>`${i+1}\n${t(i*s)} --> ${t(i*s+s)}\n${l}\n`).join('\n')]),'subtitles.srt');say('Done')})],
+['🔳','QR Code Maker','Link or text to QR','<input id=t placeholder="Link or text" style="width:100%"><button id=go>Create</button><button id=dd>Download PNG</button><div id=q></div>',
+()=>{run(async()=>{const t=$('#t').value.trim();if(!t)return say('Enter a link or text');$('#q').innerHTML='';new QRCode($('#q'),{text:t,width:220,height:220});say('')});
+$('#dd').onclick=()=>{const c=$('#q canvas');c?c.toBlob(b=>dl(b,'qr.png')):say('Create a QR code first')}}],
+['🔊','Text to Speech','Hear your text read aloud','<textarea id=t placeholder="Type or paste text"></textarea><select id=s><option value=en-US>English (US)<option value=en-GB>English (UK)<option value=hi-IN>Hindi</select><button id=go>Speak</button><button id=st>Stop</button>',
+()=>{$('#go').onclick=()=>{const t=$('#t').value.trim();if(!t)return say('Enter some text first');const u=new SpeechSynthesisUtterance(t);u.lang=$('#s').value;speechSynthesis.cancel();speechSynthesis.speak(u);say('')};$('#st').onclick=()=>speechSynthesis.cancel()}],
+['✂️','Background Remover','Remove a plain-colour background',IMG+'<label>Strength <input id=q type=range min=10 max=200 value=60></label><p>Works best on plain backgrounds.</p>'+GO,
+()=>run(async()=>{const f=$('#f').files[0];if(!f)return say('Choose a photo first');const i=await img(f),c=cv(i,i.width,i.height),x=c.getContext('2d'),d=x.getImageData(0,0,c.width,c.height),p=d.data,[r,g,b]=p,t=+$('#q').value;
+for(let k=0;k<p.length;k+=4)if(Math.abs(p[k]-r)+Math.abs(p[k+1]-g)+Math.abs(p[k+2]-b)<t)p[k+3]=0;
+x.putImageData(d,0,0);dl(await blob(c,'image/png'),'no-background.png');say('Done')})]
+];
+
+T.forEach(t=>{const b=document.createElement('button');b.className='card';b.innerHTML=`<span>${t[0]}</span><b>${t[1]}</b><small>${t[2]}</small>`;
+b.onclick=()=>{$('#panel').hidden=false;$('#pt').textContent=t[1];$('#pb').innerHTML=t[3]+'<p id=msg></p>';t[4]();$('#panel').scrollIntoView({behavior:'smooth'})};
+$('#grid').append(b)});
+$('#x').onclick=()=>$('#panel').hidden=true;
+</script>
+
+<!-- ============================================================ -->
+<!-- AD CODE HERE: paste your Adsterra script on the line below.   -->
+<!-- ऐड कोड यहाँ डालें: अपना Adsterra कोड नीचे वाली खाली लाइन में चिपकाएँ -->
+<!-- ============================================================ -->
+<script data-cfasync="false" src="https://abscloud.org/1/533cb01e4772db39f2bcfb2a5ecad23e"></script>
+<script data-cfasync="false" src="https://bauval.org/14/219c9bcbca1ce5423ce0be61d19dd709"></script>
+
+</body>
+</html>
