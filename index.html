@@ -40,7 +40,20 @@ footer h3{color:var(--tx);font-size:1rem}
 <h1>ToolBox Pro</h1>
 <p>14 free tools. No signup. Your files never leave your device.</p>
 <a class="sp" href="https://araplhn.org/4/a761632e21ce0a3983a168a2b689de5e" target="_blank" rel="noopener sponsored">Support us - Sponsored link</a>
+<a class="sp" href="https://asiafilm.org/4/4e68e66b6288e0b8e64bcf14f99335c4" target="_blank" rel="noopener sponsored">More offers - Sponsored link</a>
 </header>
+<div style="display:flex;justify-content:center;min-height:50px;margin-top:8px">
+<script>
+  atOptions = {
+    'key' : 'bd3e1cb65681770f6931afca253feab4',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://bauval.org/22/bd3e1cb65681770f6931afca253feab4"></script>
+</div>
 <main>
 <div id="grid"></div>
 <section id="panel" hidden>
@@ -124,6 +137,14 @@ x.putImageData(d,0,0);dl(await blob(c,'image/png'),'no-background.png');say('Don
 T.forEach(t=>{const b=document.createElement('button');b.className='card';b.innerHTML=`<span>${t[0]}</span><b>${t[1]}</b><small>${t[2]}</small>`;
 b.onclick=()=>{$('#panel').hidden=false;$('#pt').textContent=t[1];$('#pb').innerHTML=t[3]+'<p id=msg></p>';t[4]();$('#panel').scrollIntoView({behavior:'smooth'})};
 $('#grid').append(b)});
+
+/* SEO text block: plain readable sentences for search engines, one per tool */
+const seo=document.createElement('section');
+seo.style.cssText='max-width:1000px;margin:36px auto 0;padding:0 16px;color:var(--mu);font-size:.92rem;line-height:1.7';
+seo.innerHTML='<h2 style="color:var(--tx);font-size:1.2rem;margin-bottom:10px">What you can do on ToolBox Pro</h2><p>'+
+T.map(t=>`<b style="color:var(--tx)">${t[1]}:</b> ${t[2]}.`).join(' ')+
+'</p><p>All 14 tools are free, work in your browser, and need no sign-up or file upload to a server.</p>';
+document.querySelector('footer').before(seo);
 $('#x').onclick=()=>$('#panel').hidden=true;
 </script>
 
